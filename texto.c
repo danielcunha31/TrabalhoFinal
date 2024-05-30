@@ -1,14 +1,16 @@
-#include "texto.h"
-#include "livro.h"
-#include "lista.h"
 #include "requisitante.h"
+#include "lista.h"
+#include "hashing.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "texto.h"
+#include <ctype.h>
 #include <string.h>
-#include "hashing.h"
 
 extern No *Livros;
 extern Entrada *Livro_hash_table[HASH_TABLE_SIZE];
+extern No *requisitantes;
+extern Entrada *requisitante_hash_table[HASH_TABLE_SIZE];
 Distrito* lista_distritos = NULL;
 
 
@@ -22,14 +24,14 @@ void CarregarRequisitantes(const char *filenome) {
     while (fgets(linha, sizeof(linha), file)) {
         Requisitante req;
         if (sscanf(linha, "%s\t%s\t%s\t%s", req.id, req.nome, req.dataNascimento, req.id_freguesia) != 4) {
-            log_error("Formato Invalido", linha);
+            fprintf(stderr, "Formato inválido: %s", linha); // Mensagem de erro
             continue;
         }
         if (!ValidarIDRequisitante(req.id) || !ValidarIDFreguesia(req.id_freguesia)) {
-            log_error("Falha na validacao", linha);
+            fprintf(stderr, "Falha na validação: %s", linha); // Mensagem de erro
             continue;
         }
-    AddRequisitante(req);
+        AddRequisitante(req);
     }
     fclose(file);
 }
@@ -101,7 +103,7 @@ void CarregarConcelhos(const char* filename) {
 }
 
 void SalvarLivros(const char *filename) {
-    FILE *file = fopen(filename, "w");
+    FILE *file = fopen(filename, "a");
     if (!file) {
         perror("Não foi possível abrir o ficheiro de livros para escrita");
         return;
@@ -111,6 +113,22 @@ void SalvarLivros(const char *filename) {
         Livro *livro = (Livro *)atual->dados;
         fprintf(file, "%s,%s,%s,%d,%s\n",
                 livro->isbn, livro->titulo, livro->autor, livro->ano, livro->area);
+        atual = atual->prox;
+    }
+    fclose(file);
+}
+
+void SalvarRequisitantes(const char *filename) {
+    FILE *file = fopen(filename, "a");
+    if (!file) {
+        perror("Não foi possível abrir o ficheiro de requisitantes");
+        return;
+    }
+    No *atual = requisitantes;
+    while (atual) {
+        Requisitante *req = (Requisitante *)atual->dados;
+        fprintf(file, "%s\t%s\t%s\t%s\n",
+                req->id, req->nome, req->dataNascimento, req->id_freguesia);
         atual = atual->prox;
     }
     fclose(file);

@@ -7,8 +7,8 @@
 #include <ctype.h>
 #include <string.h>
 
-No *requisitantes = NULL ;
-Entrada *requisitante_hash_table[HASH_TABLE_SIZE] = {0};
+extern No *requisitantes;
+extern Entrada *requisitante_hash_table[HASH_TABLE_SIZE];
 
 void AddRequisitante(Requisitante requisitante) {
     Requisitante *novoRequisitante = (Requisitante *)malloc(sizeof(Requisitante));
@@ -18,15 +18,39 @@ void AddRequisitante(Requisitante requisitante) {
     InserirEntrada(requisitante_hash_table, requisitante.id, novoRequisitante);
 }
 
+int CompararRequisitantes(const void *a, const void *b) {
+    Requisitante *reqA = *(Requisitante **)a;
+    Requisitante *reqB = *(Requisitante **)b;
+    return strcmp(reqA->nome, reqB->nome);
+}
+
 void ListarRequisitantes() {
+    int count = 0;
     No *atual = requisitantes;
     while (atual) {
-        Requisitante *req = (Requisitante *)atual->dados;
-        printf("ID: %s, nome: %s, Data de nascimento: %s, Freguesia ID: %s\n",
-               req->id, req->nome, req->dataNascimento, req->id_freguesia);
+        count++;
         atual = atual->prox;
     }
+    Requisitante **array = (Requisitante **)malloc(count * sizeof(Requisitante *));
+    if (array == NULL) {
+        perror("Falha na alocação de memória para array de requisitantes");
+        return;
+    }
+    atual = requisitantes;
+    for (int i = 0; i < count; i++) {
+        array[i] = (Requisitante *)atual->dados;
+        atual = atual->prox;
+    }
+    qsort(array, count, sizeof(Requisitante *), CompararRequisitantes);
+    printf("Requisitantes ordenados:\n");
+    for (int i = 0; i < count; i++) {
+        Requisitante *req = array[i];
+        printf("ID: %s, Nome: %s, Data de Nascimento: %s, Freguesia ID: %s\n",
+               req->id, req->nome, req->dataNascimento, req->id_freguesia);
+    }
+    free(array);
 }
+
 
 int ValidarIDRequisitante(const char id[]) {
    if (strlen(id) != 9) {
@@ -61,18 +85,12 @@ int ValidarIDFreguesia(const char id[]) {
     return 1;
 }
 
-void SalvarRequisitantes(const char *filename, const char *modo) {
-    FILE *file = fopen(filename, modo);
-    if (!file) {
-        perror("Não foi possível abrir o ficheiro de requisitantes");
-        return;
+void BuscarRequisitantePorNome(const char *nome) {
+    Requisitante *req = BuscarValor(requisitante_hash_table, nome);
+    if (req) {
+        printf("Encontrar requisitante:\n Nome: %s, ID: %s, Data de Nascimento: %s, ID Freguesia: %s\n",
+               req->nome, req->id, req->dataNascimento, req->id_freguesia);
+    } else {
+        printf("Requisitante nao encontrado.\n");
     }
-    No *atual = requisitantes;
-    while (atual) {
-        Requisitante *req = (Requisitante *)atual->dados;
-        fprintf(file, "%s\t%s\t%s\t%s\n",
-                req->id, req->nome, req->dataNascimento, req->id_freguesia);
-        atual = atual->prox;
-    }
-    fclose(file);
 }

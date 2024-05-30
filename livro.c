@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "texto.h"
 
  No *Livros;
  Entrada *Livro_hash_table[HASH_TABLE_SIZE];
@@ -24,7 +25,7 @@ void AddLivro(Livro livro) {
 }
 
 void ListarLivrosPorArea() {
-   NoArea *areas = NULL;
+    NoArea *areas = NULL;
     // Agrupar livros por área
     No *atual = Livros;
     while (atual) {
@@ -73,6 +74,9 @@ void ListarLivrosPorArea() {
         noArea = noArea->prox;
         printf("\n");
     }
+    // Salvar os livros no ficheiro após listar
+    SalvarLivros("livros.txt");
+
     // Liberar a memória alocada para os nós de área
     while (areas) {
         NoArea *tmp = areas;

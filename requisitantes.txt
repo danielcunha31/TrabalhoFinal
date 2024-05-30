@@ -1,5 +1,3 @@
-888822211	test	24-05-2024	010103
-888822211	test	24-05-2024	010103
 448968759	Dina Baptista Moreno Mateus	24-08-1965	010919
 026067856	Rita Vivas Rego Castanheira Carrico	09-09-1969	180505
 882239440	Maria Vivas Almada Castanheira	07-11-1997	131806
@@ -10,5 +8,4 @@
 838156207	Boris Azevedo Seixas Carneiro Lobato	17-01-1998	180601
 902786512	Basilio Andrade Carrasco Rego Clementino	28-11-1966	151207
 692934458	Rita Valbom Cardoso Lopes	05-04-1973	071106
-
 181126597	Dora Amado	13-12-1996	011322

@@ -22,7 +22,7 @@ typedef struct Distrito {
 void CarregarRequisitantes(const char *filenome);
 void CarregarLivros(const char *filenome);
 void SalvarLivros(const char *filename);
-void SalvarRequisitantes(const char *filename, const char *modo);
+void SalvarRequisitantes(const char *filename);
 void CarregarDistritos(const char *filenome);
 void CarregarConcelhos(const char *filenome);
 void log_error(const char *error_message, const char *linha);

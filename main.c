@@ -11,18 +11,21 @@
 
 No *Livros = NULL;
 Entrada *Livro_hash_table[HASH_TABLE_SIZE] = {0};
+No *requisitantes = NULL ;
+Entrada *requisitante_hash_table[HASH_TABLE_SIZE] = {0};
 
 void menuPrincipal() {
     printf("\nBem vindo à Biblioteca ESTGV!\n");
-    printf("1. CarregarDados\n");
+    printf("1. Carregar Dados\n");
     printf("2. Adicionar Livro\n");
     printf("3. Listar livros por area\n");
     printf("4. Buscar livro por ISBN\n");
     printf("5. Adicionar Requisitante\n");
-    printf("6. Listar Requisitantes\n");
-    printf("7. Requisitar livro\n");
-    printf("8. Devolver Livro\n");
-    printf("9. Listar atuais requisicoes\n");
+    printf("6. Buscar Requisitante pelo nome\n");
+    printf("7. Listar Requisitantes\n");
+    printf("8. Requisitar livro\n");
+    printf("9. Devolver Livro\n");
+    printf("10. Listar atuais requisicoes\n");
     printf("0. Sair\n");
     printf("Insira a sua escolha: ");
 }
@@ -61,6 +64,13 @@ void BuscarLivroMenu() {
     BuscarLivroPorISBN(isbn);
 }
 
+void BuscarRequisitanteMenu (){
+    char nome[50];
+    printf("Inserir Nome:");
+    scanf("%[^\n]%*c", nome);
+    BuscarRequisitantePorNome(nome);
+}
+
 void AddRequisitanteMenu() {
     Requisitante requisitante;
     printf("Inserir ID: ");
@@ -80,15 +90,7 @@ void AddRequisitanteMenu() {
         return; // Retorna imediatamente se o ID da freguesia for inválido
     } 
     AddRequisitante(requisitante);
-    FILE *file = fopen("requisitantes.txt", "a"); // Salva apenas o novo requisitante no modo append
-    if (!file) {
-        perror("Não foi possível abrir o ficheiro de requisitantes para escrita");
-        return;
-    }
-    fprintf(file, "%s\t%s\t%s\t%s\n",
-            requisitante.id, requisitante.nome, requisitante.dataNascimento, requisitante.id_freguesia);
-    fclose(file);
-    
+    SalvarRequisitantes("requisitantes.txt");
     printf("Requisitante adicionado com sucesso.\n");
 
 }
@@ -138,17 +140,20 @@ int main() {
                 AddRequisitanteMenu();
                 break;
             case 6:
-                ListarRequisitantes();
+                BuscarRequisitanteMenu ();
                 break;
             case 7:
-                RequisitarLivroMenu();
+                ListarRequisitantes();
                 break;
             case 8:
-                DevolverLivroMenu();
+                RequisitarLivroMenu();
                 break;
             case 9:
-                ListarAtuaisRequisicoes();
+                DevolverLivroMenu();
                 break;
+            case 10:
+                 ListarAtuaisRequisicoes();
+                 break;
             case 0:
                 printf("A sair...\n");
                 exit(0);
