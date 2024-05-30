@@ -1,0 +1,30 @@
+#ifndef TEXTO_H
+#define TEXTO_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "requisitante.h"
+#include "livro.h"
+
+typedef struct Concelho {
+    int id;
+    char nome[100];
+    struct Concelho* prox;
+} Concelho;
+
+typedef struct Distrito {
+    int id;
+    char nome[100];
+    Concelho* concelhos;
+    struct Distrito* prox;
+} Distrito;
+
+void CarregarRequisitantes(const char *filenome);
+void CarregarLivros(const char *filenome);
+void SalvarLivros(const char *filename);
+void SalvarRequisitantes(const char *filename, const char *modo);
+void CarregarDistritos(const char *filenome);
+void CarregarConcelhos(const char *filenome);
+void log_error(const char *error_message, const char *linha);
+
+#endif // TEXTO_H
