@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include <string.h>
 
-No *requisitantes = NULL;
+No *requisitantes = NULL ;
 Entrada *requisitante_hash_table[HASH_TABLE_SIZE] = {0};
 
 void AddRequisitante(Requisitante requisitante) {
