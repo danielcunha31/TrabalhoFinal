@@ -28,6 +28,17 @@ void ListarRequisitantes() {
     }
 }
 
+void ListarRequisitantePorNome(const char *nome){
+    extern Entrada *requisitante_hash_table[HASH_TABLE_SIZE];
+    Requisitante *req = ObterValor(requisitante_hash_table, nome);
+    if (req) {
+        printf("Encontrar requisitante:\n Nome: %s, ID: %s, Data de Nascimento: %s, ID Freguesia: %s\n",
+               req->nome, req->id, req->dataNascimento, req->id_freguesia);
+    } else {
+        printf("Requisitante nao encontrado.\n");
+    }
+}
+
 int ValidarIDRequisitante(const char id[]) {
    if (strlen(id) != 9) {
         return 0; // O ID deve ter exatamente 9 caracteres
@@ -59,20 +70,4 @@ int ValidarIDFreguesia(const char id[]) {
         }
     }
     return 1;
-}
-
-void SalvarRequisitantes(const char *filename, const char *modo) {
-    FILE *file = fopen(filename, modo);
-    if (!file) {
-        perror("Não foi possível abrir o ficheiro de requisitantes");
-        return;
-    }
-    No *atual = requisitantes;
-    while (atual) {
-        Requisitante *req = (Requisitante *)atual->dados;
-        fprintf(file, "%s\t%s\t%s\t%s\n",
-                req->id, req->nome, req->dataNascimento, req->id_freguesia);
-        atual = atual->prox;
-    }
-    fclose(file);
 }

@@ -11,9 +11,8 @@ typedef struct {
 // Function prototypes
 void AddRequisitante(Requisitante requisitante);
 void ListarRequisitantes();
-void SalvarLivros(const char *filename);
+void ListarRequisitantePorNome(const char *nome);
 int ValidarIDRequisitante(const char id[]);
-int ValidarData(const char *data);
 int ValidarIDFreguesia(const char id[]);
 
 #endif // REQUISITANTE_H

@@ -88,8 +88,8 @@ void ListarLivrosPorArea() {
     }
 }
 
-void BuscarLivroPorISBN(const char *isbn) {
-    Livro *livro = (Livro *)BuscarValor(Livro_hash_table, isbn);
+void ListarLivroPorISBN(const char *isbn) {
+    Livro *livro = (Livro *)ObterValor(Livro_hash_table, isbn);
     if (livro) {
         printf("Encontrar Livro:\n ISBN: %s, titulo: %s, autor: %s, Area: %s, ano: %d\n",
                livro->isbn, livro->titulo, livro->autor, livro->area, livro->ano);

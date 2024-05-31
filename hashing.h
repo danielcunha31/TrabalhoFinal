@@ -14,7 +14,7 @@ typedef struct Entrada {
 unsigned int hash(const char *key);
 Entrada* CriarEntrada(const char *key, void *valor);
 void InserirEntrada(Entrada **hash_table, const char *key, void *valor);
-void* BuscarValor(Entrada **hash_table, const char *key);
+void* ObterValor(Entrada **hash_table, const char *key);
 void DestruirHashing(Entrada **hash_table);
 
 #endif // HASHING_H

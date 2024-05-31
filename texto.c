@@ -8,6 +8,7 @@
 #include "hashing.h"
 
 extern No *Livros;
+extern No *Requisitantes;
 extern Entrada *Livro_hash_table[HASH_TABLE_SIZE];
 Distrito* lista_distritos = NULL;
 
@@ -22,14 +23,14 @@ void CarregarRequisitantes(const char *filenome) {
     while (fgets(linha, sizeof(linha), file)) {
         Requisitante req;
         if (sscanf(linha, "%s\t%s\t%s\t%s", req.id, req.nome, req.dataNascimento, req.id_freguesia) != 4) {
-            log_error("Formato Invalido", linha);
+            SalvarErro("Formato Invalido", linha);
             continue;
         }
         if (!ValidarIDRequisitante(req.id) || !ValidarIDFreguesia(req.id_freguesia)) {
-            log_error("Falha na validacao", linha);
+            SalvarErro("Falha na validacao", linha);
             continue;
         }
-    AddRequisitante(req);
+        AddRequisitante(req);
     }
     fclose(file);
 }
@@ -90,8 +91,8 @@ void CarregarConcelhos(const char* filename) {
     char linha[256];
     while (fgets(linha, sizeof(linha), file)) {
         Livro livro;
-        if (sscanf(linha, "%s\t%s\t%s\t%s", livro.isbn, livro.titulo, livro.autor, livro.ano, livro.area) != 5) {
-            log_error("Formato Invalido", linha);
+        if (sscanf(linha, "%s\t%s\t%d\t%s", livro.isbn, livro.titulo, livro.autor, livro.ano, livro.area) != 5) {
+            SalvarErro("Formato Invalido", linha);
             continue;
         }
         
@@ -101,7 +102,7 @@ void CarregarConcelhos(const char* filename) {
 }
 
 void SalvarLivros(const char *filename) {
-    FILE *file = fopen(filename, "w");
+    FILE *file = fopen(filename, "a");
     if (!file) {
         perror("Não foi possível abrir o ficheiro de livros para escrita");
         return;
@@ -109,16 +110,32 @@ void SalvarLivros(const char *filename) {
     No *atual = Livros;
     while (atual) {
         Livro *livro = (Livro *)atual->dados;
-        fprintf(file, "%s,%s,%s,%d,%s\n",
+        fprintf(file, "%s\t%s\t%s\t%d\t%s\n",
                 livro->isbn, livro->titulo, livro->autor, livro->ano, livro->area);
         atual = atual->prox;
     }
     fclose(file);
 }
 
-void log_error(const char *erro_message, const char *linha) {
+void SalvarRequisitantes(const char *filename) {
+    FILE *file = fopen(filename, "a"); // Salva apenas o novo requisitante no modo append
+    if (!file) {
+        perror("Não foi possível abrir o ficheiro de requisitantes para escrita");
+        return;
+    }
+    No *atual = Requisitantes;
+    while (atual) {
+        Requisitante *requisitante = (Requisitante *)atual->dados;
+        fprintf(file, "%s\t%s\t%s\t%s\n",
+            requisitante->id, requisitante->nome, requisitante->dataNascimento, requisitante->id_freguesia);
+        atual = atual->prox;
+    } 
+    fclose(file);
+}
+
+void SalvarErro(const char *erro_message, const char *linha) {
     FILE *log = fopen("logs.txt", "a");
     if (!log) return;
-    fprintf(log, "Error: %s\nlinha: %s\n", erro_message, linha);
+    fprintf(log, "Erro: %s\nlinha: %s\n", erro_message, linha);
     fclose(log);
 }
